@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOLD & FrogStreet AIM Interactive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .domain-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .all-btn {
+            background: #667eea !important;
+            color: white !important;
+            border-color: #667eea !important;
+        }
+
+        .all-btn.active {
+            background: #5a6fd8 !important;
+        }
+
+        .clear-search {
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-search:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .domain-section {
+            margin-bottom: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .domain-header {
+            padding: 20px 30px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .domain-header:hover {
+            transform: translateY(-2px);
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .domain-content {
+            background: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .domain-content.expanded {
+            max-height: 5000px;
+        }
+
+        .objective-item {
+            padding: 20px 30px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: all 0.3s ease;
+        }
+
+        .objective-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .gold-objective {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .frogstreet-progression {
+            color: #555;
+            line-height: 1.6;
+            padding-left: 20px;
+            border-left: 4px solid #e9ecef;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 30px;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .results-count {
+            margin-bottom: 20px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Domain-specific colors (pastel) */
+        .sed .domain-header { background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%); }
+        .sed .filter-btn { background: #ffeaa7; border-color: #fab1a0; }
+        .sed .filter-btn.active { background: #fab1a0; color: white; }
+        .sed .domain-content { background: linear-gradient(135deg, #fff9f0 0%, #fef5f0 100%); }
+        .sed .objective-item { border-left: 4px solid #fab1a0; }
+
+        .pd .domain-header { background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%); }
+        .pd .filter-btn { background: #a8e6cf; border-color: #88d8a3; }
+        .pd .filter-btn.active { background: #88d8a3; color: white; }
+        .pd .domain-content { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); }
+        .pd .objective-item { border-left: 4px solid #88d8a3; }
+
+        .ld .domain-header { background: linear-gradient(135deg, #aed6f1 0%, #85c1e9 100%); }
+        .ld .filter-btn { background: #aed6f1; border-color: #85c1e9; }
+        .ld .filter-btn.active { background: #85c1e9; color: white; }
+        .ld .domain-content { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+        .ld .objective-item { border-left: 4px solid #85c1e9; }
+
+        .cd .domain-header { background: linear-gradient(135deg, #e8b4ff 0%, #d63384 100%); }
+        .cd .filter-btn { background: #e8b4ff; border-color: #d63384; }
+        .cd .filter-btn.active { background: #d63384; color: white; }
+        .cd .domain-content { background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); }
+        .cd .objective-item { border-left: 4px solid #d63384; }
+
+        .l .domain-header { background: linear-gradient(135deg, #ffd93d 0%, #ff9f1c 100%); }
+        .l .filter-btn { background: #ffd93d; border-color: #ff9f1c; }
+        .l .filter-btn.active { background: #ff9f1c; color: white; }
+        .l .domain-content { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
+        .l .objective-item { border-left: 4px solid #ff9f1c; }
+
+        .m .domain-header { background: linear-gradient(135deg, #c8a2c8 0%, #9370db 100%); }
+        .m .filter-btn { background: #c8a2c8; border-color: #9370db; }
+        .m .filter-btn.active { background: #9370db; color: white; }
+        .m .domain-content { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); }
+        .m .objective-item { border-left: 4px solid #9370db; }
+
+        .st .domain-header { background: linear-gradient(135deg, #98fb98 0%, #90ee90 100%); }
+        .st .filter-btn { background: #98fb98; border-color: #90ee90; }
+        .st .filter-btn.active { background: #90ee90; color: white; }
+        .st .domain-content { background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%); }
+        .st .objective-item { border-left: 4px solid #90ee90; }
+
+        .ss .domain-header { background: linear-gradient(135deg, #ffb3ba 0%, #ff9999 100%); }
+        .ss .filter-btn { background: #ffb3ba; border-color: #ff9999; }
+        .ss .filter-btn.active { background: #ff9999; color: white; }
+        .ss .domain-content { background: linear-gradient(135deg, #fff1f2 0%, #fce7e7 100%); }
+        .ss .objective-item { border-left: 4px solid #ff9999; }
+
+        .a .domain-header { background: linear-gradient(135deg, #d4a5d4 0%, #c8a2c8 100%); }
+        .a .filter-btn { background: #d4a5d4; border-color: #c8a2c8; }
+        .a .filter-btn.active { background: #c8a2c8; color: white; }
+        .a .domain-content { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
+        .a .objective-item { border-left: 4px solid #c8a2c8; }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                min-width: auto;
+            }
+
+            .domain-filter {
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .objective-item {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Teaching Strategies GOLD & FrogStreet AIM</h1>
+            <p>Interactive Learning Progressions Correlation Guide</p>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search objectives or progressions..." id="searchInput">
+                <div class="domain-filter">
+                    <button class="filter-btn all-btn active" data-domain="all" style="background: #667eea; color: white;">All</button>
+                    <button class="filter-btn sed" data-domain="SED">🟠 Social-Emotional</button>
+                    <button class="filter-btn pd" data-domain="PD">🟢 Physical</button>
+                    <button class="filter-btn ld" data-domain="LD">🔵 Language</button>
+                    <button class="filter-btn cd" data-domain="CD">🟣 Cognitive</button>
+                    <button class="filter-btn l" data-domain="L">🟡 Literacy</button>
+                    <button class="filter-btn m" data-domain="M">🟪 Mathematics</button>
+                    <button class="filter-btn st" data-domain="ST">🌿 Science & Technology</button>
+                    <button class="filter-btn ss" data-domain="SS">🌸 Social Studies</button>
+                    <button class="filter-btn a" data-domain="A">💜 The Arts</button>
+                </div>
+                <button class="clear-search" id="clearSearch">Clear</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="results-count" id="resultsCount" style="display: none;"></div>
+            <div class="no-results" id="noResults" style="display: none;">
+                <h3>No results found</h3>
+                <p>Try adjusting your search terms or filters</p>
+            </div>
+
+            <!-- Social-Emotional Development -->
+            <div class="domain-section sed" data-domain="SED">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Social-Emotional Development (SED)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="domain-content expanded">
+                    <div class="objective-item" data-search="SED 1 Regulates own emotions behaviors manages feelings self-control strategies">
+                        <div class="gold-objective">SED 1.a. Manages feelings</div>
+                        <div class="frogstreet-progression">SF.B.1. Self-Control Strategies: Develops strategies to manage the expansion of feelings and thoughts by regulating behavior with decreasing reliance on adult support.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 1 follows limits expectations following directions">
+                        <div class="gold-objective">SED 1.b. Follows limits and expectations</div>
+                        <div class="frogstreet-progression">SF.B.3. Following Directions: Follows adult lead by imitating actions and expands ability to follow increasingly complex directions.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 1 takes care own needs identifying abilities self-confidence">
+                        <div class="gold-objective">SED 1.c. Takes care of own needs appropriately</div>
+                        <div class="frogstreet-progression">SF.A.6. Identifying Abilities: Identifies abilities with increasing ability.<br><br>SF.A.7. Self-Confidence: Demonstrates increasing self-confidence in own abilities.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 2 establishes sustains positive relationships forms adults separation emotional support">
+                        <div class="gold-objective">SED 2.a. Forms relationships with adults</div>
+                        <div class="frogstreet-progression">SF.A.3. Separation from Adults: Seeks to maintain contact with familiar adults and separates from them with decreasing distress in familiar situations.<br><br>SF.A.4. Seeking Emotional Support: Seeks emotional support from familiar adults and expands ability to rely on them only when very distressed.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 2 responds emotional cues identification">
+                        <div class="gold-objective">SED 2.b. Responds to emotional cues</div>
+                        <div class="frogstreet-progression">SF.A.1. Emotional Identification: Responds to emotions of others and expands to identifying emotions of self and others.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 2 interacts peers play work coordination cooperation">
+                        <div class="gold-objective">SED 2.c. Interacts with peers</div>
+                        <div class="frogstreet-progression">SF.B.8. Play/Work with Peers: Engages with peers with increasing coordination and cooperation.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 2 makes friends social behaviors">
+                        <div class="gold-objective">SED 2.d. Makes friends</div>
+                        <div class="frogstreet-progression">SF.B.8. Play/Work with Peers: Engages with peers with increasing coordination and cooperation.<br><br>SF.B.9. Social Behaviors: Uses increasingly positive social behaviors when interacting with peers.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 3 participates cooperatively constructively group situations balances needs rights conflict resolution">
+                        <div class="gold-objective">SED 3.a. Balances needs and rights of self and others</div>
+                        <div class="frogstreet-progression">SF.B.9. Social Behaviors: Uses increasingly positive social behaviors when interacting with peers.</div>
+                    </div>
+                    <div class="objective-item" data-search="SED 3 solves social problems conflict resolution strategies">
+                        <div class="gold-objective">SED 3.b. Solves social problems</div>
+                        <div class="frogstreet-progression">SF.A.5. Conflict Resolution Strategies: Engages with peers and resolves conflicts with decreasing reliance on adult support.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Development -->
+            <div class="domain-section pd" data-domain="PD">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Physical Development (PD)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="PD 4 demonstrates traveling skills locomotor control coordination balance">
+                        <div class="gold-objective">PD 4. Demonstrates traveling skills</div>
+                        <div class="frogstreet-progression">PPMD.A.1. Locomotor Skills: Moves the whole body with increasing control, coordination, and balance.</div>
+                    </div>
+                    <div class="objective-item" data-search="PD 5 demonstrates balancing skills non-locomotor body parts">
+                        <div class="gold-objective">PD 5. Demonstrates balancing skills</div>
+                        <div class="frogstreet-progression">PPMD.A.2. Non-Locomotor Skills: Moves body parts with increasing control, coordination, and balance.</div>
+                    </div>
+                    <div class="objective-item" data-search="PD 6 demonstrates gross-motor manipulative skills perceptual spatial awareness objects">
+                        <div class="gold-objective">PD 6. Demonstrates gross-motor manipulative skills</div>
+                        <div class="frogstreet-progression">PPMD.A.3. Perceptual/Spatial Awareness: Uses objects with increasing awareness and coordination of the body.</div>
+                    </div>
+                    <div class="objective-item" data-search="PD 7 demonstrates fine-motor strength coordination fingers hands tools manipulation">
+                        <div class="gold-objective">PD 7.a. Uses fingers and hands</div>
+                        <div class="frogstreet-progression">PPMD.A.4. Tools and Object Manipulation: Manipulates tools or objects using hands with increasing coordination and control.</div>
+                    </div>
+                    <div class="objective-item" data-search="PD 7 uses writing drawing tools grasp">
+                        <div class="gold-objective">PD 7.b. Uses writing and drawing tools</div>
+                        <div class="frogstreet-progression">PPMD.A.5. Writing Tool Grasp: Manipulates writing and drawing tools with increasingly efficient grasp.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Language Development -->
+            <div class="domain-section ld" data-domain="LD">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Language Development (LD)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="LD 8 listens understands complex language comprehends listening purposes situations">
+                        <div class="gold-objective">LD 8.a. Comprehends language</div>
+                        <div class="frogstreet-progression">LL.A.1. Listening/Purposes and Situations: Understands adults and peers in a variety of contexts and different situations.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 8 follows directions following adult lead imitating actions">
+                        <div class="gold-objective">LD 8.b. Follows directions</div>
+                        <div class="frogstreet-progression">SF.B.3. Following Directions: Follows adult lead by imitating actions and expands ability to follow increasingly complex directions.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 9 uses language express thoughts needs expanding expressive vocabulary word meanings relationships">
+                        <div class="gold-objective">LD 9.a. Uses an expanding expressive vocabulary</div>
+                        <div class="frogstreet-progression">LL.A.3. Word Meanings: Understands and communicates an increasing number of words<br><br>LL.A.4. Word Relationships: Understands associations between new and familiar words, and expands ability to understand verbs with similar meaning, and multiple meanings for the same word.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 9 speaks clearly speaking purposes situations communication">
+                        <div class="gold-objective">LD 9.b. Speaks clearly</div>
+                        <div class="frogstreet-progression">LL.A.2. Speaking/Purposes and Situations: Communicates with adults and peers for a variety of purposes in different situations.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 9 uses conventional grammar sentences questions prepositions inflections">
+                        <div class="gold-objective">LD 9.c. Uses conventional grammar</div>
+                        <div class="frogstreet-progression">LL.A.5. Sentences: Produces words, and expands ability to produce word phrases and increasing complex sentences.<br><br>LL.A.6. Questions: Produces questions through changes in pitch and expands ability to include manipulating of sentence structure.<br><br>LL.A.7. Prepositions: Uses an increasing number of prepositions.<br><br>LL.A.8. Inflections: Uses inflections of increasing complexity and matches them to appropriate words.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 9 tells about another time place past present future awareness routines events">
+                        <div class="gold-objective">LD 9.d. Tells about another time or place</div>
+                        <div class="frogstreet-progression">CSS.B.1. Past, Present, and Future: Shows awareness and steps in familiar routines and expands ability to describe series of events.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 10 uses appropriate conversational communication skills engages conversation social rules">
+                        <div class="gold-objective">LD 10.a. Engages in conversation</div>
+                        <div class="frogstreet-progression">LL.A.2. Speaking/Purposes and Situations: Communicates with adults and peers for a variety of purposes in different situations.</div>
+                    </div>
+                    <div class="objective-item" data-search="LD 10 uses social rules language speaking purposes situations">
+                        <div class="gold-objective">LD 10.b. Uses social rules of language</div>
+                        <div class="frogstreet-progression">LL.A.2. Speaking/Purposes and Situations: Communicates with adults and peers for a variety of purposes in different situations.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cognitive Development -->
+            <div class="domain-section cd" data-domain="CD">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Cognitive Development (CD)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="CD 11 demonstrates positive approaches learning attends engages interest activities">
+                        <div class="gold-objective">CD 11.a. Attends and engages</div>
+                        <div class="frogstreet-progression">SF.B.6. Interest: Shows some interest in objects and engages in activities, and increasingly shares them with others.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 11 persists persisting tasks lengths time">
+                        <div class="gold-objective">CD 11.b. Persists</div>
+                        <div class="frogstreet-progression">SF.B.2. Persisting with Tasks: Demonstrates the ability to persist with a task for increasing lengths of time.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 11 solves problems using logic complex">
+                        <div class="gold-objective">CD 11.c. Solves problems</div>
+                        <div class="frogstreet-progression">SF.B.5. Using Logic: Uses logic to solve increasingly complex problems.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 11 shows curiosity motivation interest objects activities">
+                        <div class="gold-objective">CD 11.d. Shows curiosity and motivation</div>
+                        <div class="frogstreet-progression">SF.B.6. Interest: Shows some interest in objects and engages in activities, and increasingly shares them with others.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 11 shows flexibility inventiveness thinking planning initiates activities complexity">
+                        <div class="gold-objective">CD 11.e. Shows flexibility and inventiveness in thinking</div>
+                        <div class="frogstreet-progression">SF.B.7. Planning: Plans and initiates activities of increasing complexity.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 12 remembers connects experiences recognizes recalls information recall connection familiar routines">
+                        <div class="gold-objective">CD 12.a. Recognizes and recalls</div>
+                        <div class="frogstreet-progression">SF.B.4. Information Recall and Connection: Recalls or repeats familiar routines, simple activities and past experiences with increasing complexity</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 12 makes connections information recall connection familiar routines activities experiences">
+                        <div class="gold-objective">CD 12.b. Makes connections</div>
+                        <div class="frogstreet-progression">SF.B.4. Information Recall and Connection: Recalls or repeats familiar routines, simple activities and past experiences with increasing complexity</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 13 uses classification skills examining describing classifying data sorts objects events phenomenon attributes">
+                        <div class="gold-objective">CD 13. Uses classification skills</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 14 uses symbols images represent something not present thinks symbolically planning">
+                        <div class="gold-objective">CD 14.a. Thinks symbolically</div>
+                        <div class="frogstreet-progression">SF.B.7. Planning: Plans and initiates activities of increasing complexity.</div>
+                    </div>
+                    <div class="objective-item" data-search="CD 14 engages sociodramatic play work peers coordination cooperation">
+                        <div class="gold-objective">CD 14.b. Engages in sociodramatic play</div>
+                        <div class="frogstreet-progression">SF.B.8. Play/Work with Peers: Engages with peers with increasing coordination and cooperation.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Literacy -->
+            <div class="domain-section l" data-domain="L">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Literacy (L)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="L 15 demonstrates phonological awareness notices discriminates rhyme rhyming words identifies produces">
+                        <div class="gold-objective">L 15.a. Notices and discriminates rhyme</div>
+                        <div class="frogstreet-progression">LL.B.4. Rhyming Words: Shows interest in rhymes and expands ability to identify and produce rhymes</div>
+                    </div>
+                    <div class="objective-item" data-search="L 15 notices discriminates alliteration initial final medial sounds spoken words">
+                        <div class="gold-objective">L 15.b. Notices and discriminates alliteration</div>
+                        <div class="frogstreet-progression">LL.B.6. Initial/Final/Medial Sounds: Identifies initial sounds in spoken words and expands ability to identify final and medial sounds.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 15 notices discriminates smaller units sound syllables onsets rimes phonemes blending segmenting adding deleting substituting">
+                        <div class="gold-objective">L 15.c. Notices and discriminates smaller and smaller units of sound</div>
+                        <div class="frogstreet-progression">LL.B.5. Syllables/Onsets and Rimes/Phonemes: Identifies syllables and expands ability to orally blend and segment syllables, onsets and rimes, and phonemes.<br><br>LL.B.6. Initial/Final/Medial Sounds: Identifies initial sounds in spoken words and expands ability to identify final and medial sounds.<br><br>LL.B.7. Adding/Deleting/Substituting Sounds: Orally adds, deletes, and substitutes initial sounds in single syllable words to create new words, and expands ability to final and medial sounds.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 16 demonstrates knowledge alphabet identifies names letters upper lowercase">
+                        <div class="gold-objective">L 16.a. Identifies and names letters</div>
+                        <div class="frogstreet-progression">LL.B.8. Upper- and Lowercase Letters: Identifies an increasing number of upper and lower case letters.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 16 uses letter-sound knowledge letter sounds identifies produces frequent sounds correspond">
+                        <div class="gold-objective">L 16.b. Uses letter-sound knowledge</div>
+                        <div class="frogstreet-progression">LL.B.9. Letter Sounds: Identifies and produces an increasing number of the most frequent sounds that correspond to letters.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 17 demonstrates knowledge print use concepts appreciates books features purposes">
+                        <div class="gold-objective">L 17.a. Uses and appreciates books</div>
+                        <div class="frogstreet-progression">LL.B.3. Concepts of Print: Shows interest in print and expands ability to identify features and purposes of print.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 17 uses print concepts features purposes">
+                        <div class="gold-objective">L 17.b. Uses print concepts</div>
+                        <div class="frogstreet-progression">LL.B.3. Concepts of Print: Shows interest in print and expands ability to identify features and purposes of print.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 18 comprehends responds books texts interacts read-alouds conversations questions">
+                        <div class="gold-objective">L 18.a. Interacts during read-alouds and book conversations</div>
+                        <div class="frogstreet-progression">LL.B.1. Responds to Questions About a Text: Responds to increasingly complex questions about text.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 18 uses emergent reading skills responds questions text retell stories gestures words drawings">
+                        <div class="gold-objective">L 18.b. Uses emergent reading skills</div>
+                        <div class="frogstreet-progression">LL.B.1. Responds to Questions About a Text: Responds to increasingly complex questions about text.<br><br>LL.B.2. Retell a Text: Shows interest in books and expands ability to retell parts of stories with gestures, words, or drawings.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 18 retells stories retell text interest books parts gestures words drawings">
+                        <div class="gold-objective">L 18.c. Retells stories</div>
+                        <div class="frogstreet-progression">LL.B.2. Retell a Text: Shows interest in books and expands ability to retell parts of stories with gestures, words, or drawings.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 19 demonstrates emergent writing skills writes name recognition letters">
+                        <div class="gold-objective">L 19.a. Writes name</div>
+                        <div class="frogstreet-progression">LL.C.1. Name Recognition and Writing: Recognizes letters of own name and expands ability to recognize and write own name.</div>
+                    </div>
+                    <div class="objective-item" data-search="L 19 writes convey meaning writing conveys effectiveness">
+                        <div class="gold-objective">L 19.b. Writes to convey meaning</div>
+                        <div class="frogstreet-progression">LL.C.2. Writing to Convey Meaning: Conveys meaning through writing with increasing effectiveness.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematics -->
+            <div class="domain-section m" data-domain="M">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Mathematics (M)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="M 20 uses number concepts operations counts rote counting number words sequence object counting one-to-one correspondence cardinality">
+                        <div class="gold-objective">M 20.a. Counts</div>
+                        <div class="frogstreet-progression">CM.A.1. Rote Counting: Demonstrates knowledge of number words and expands ability to reciting number words in sequence.<br><br>CM.A.2. Object Counting: Demonstrates ability to count and increasing number of objects using one-to-one correspondence with an understanding that the last number tells how many (cardinality)</div>
+                    </div>
+                    <div class="objective-item" data-search="M 20 quantifies making sets knowledge quantity making representing sets objects">
+                        <div class="gold-objective">M 20.b. Quantifies</div>
+                        <div class="frogstreet-progression">CM.A.3. Making Sets: Demonstrates knowledge of quantity by making and representing sets of objects.</div>
+                    </div>
+                    <div class="objective-item" data-search="M 20 connects numerals quantities subitizing small number recognition ability recognize name objects group without counting">
+                        <div class="gold-objective">M 20.c. Connects numerals with their quantities</div>
+                        <div class="frogstreet-progression">CM.A.4. Subitizing (Small Number Recognition) Demonstrates ability to recognize and name an increasing number of objects in a group without having to count.</div>
+                    </div>
+                    <div class="objective-item" data-search="M 21 explores describes spatial relationships shapes understands perceptual spatial awareness objects coordination body">
+                        <div class="gold-objective">M 21.a. Understands spatial relationships</div>
+                        <div class="frogstreet-progression">PPMD.A.3. Perceptual/Spatial Awareness: Uses objects with increasing awareness and coordination of the body.</div>
+                    </div>
+                    <div class="objective-item" data-search="M 21 understands shapes two-dimensional three-dimensional explores match identify describe figures">
+                        <div class="gold-objective">M 21.b. Understands shapes</div>
+                        <div class="frogstreet-progression">CM.C.2. Two-Dimensional Shapes: Explores two-dimensional shapes and expands ability to match, identify and describe these figures.<br><br>CM.C.3. Three-Dimensional Shapes: Identifies three-dimensional shapes and expands ability to describe three-dimensional shapes.</div>
+                    </div>
+                    <div class="objective-item" data-search="M 22 compares measures identifying comparing measuring objects measurable attribute multiple attributes">
+                        <div class="gold-objective">M 22. Compares and measures</div>
+                        <div class="frogstreet-progression">CM.C.1. Identifying/Comparing/Measuring: Identifies and compares objects by one measurable attribute and expands ability to multiple attributes.</div>
+                    </div>
+                    <div class="objective-item" data-search="M 23 demonstrates knowledge patterns identifying extending creating patterns logic observation">
+                        <div class="gold-objective">M 23. Demonstrates knowledge of patterns</div>
+                        <div class="frogstreet-progression">CM.B.4. Identifying, Extending, and Creating Patterns: Uses logic and observation to identify, extend, describe, and create patterns.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Science & Technology -->
+            <div class="domain-section st" data-domain="ST">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Science & Technology (ST)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="ST 24 uses scientific inquiry skills examining describing classifying data sorts objects events phenomenon attributes explore examine investigate">
+                        <div class="gold-objective">ST 24. Uses scientific inquiry skills</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.<br><br>CS.A.2. Explore, Examine, and Investigate: Explores objects and people and expands ability to gather and communicate information about them.</div>
+                    </div>
+                    <div class="objective-item" data-search="ST 25 demonstrates knowledge characteristics living things examining describing classifying data sorts objects events phenomenon attributes explore examine investigate">
+                        <div class="gold-objective">ST 25. Demonstrates knowledge of the characteristics of living things</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.<br><br>CS.A.2. Explore, Examine, and Investigate: Explores objects and people and expands ability to gather and communicate information about them.</div>
+                    </div>
+                    <div class="objective-item" data-search="ST 26 demonstrates knowledge physical properties objects materials examining describing classifying data sorts events phenomenon attributes explore examine investigate">
+                        <div class="gold-objective">ST 26. Demonstrates knowledge of the physical properties of objects and materials</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.<br><br>CS.A.2. Explore, Examine, and Investigate: Explores objects and people and expands ability to gather and communicate information about them.</div>
+                    </div>
+                    <div class="objective-item" data-search="ST 27 demonstrates knowledge earth environment examining describing classifying data sorts objects events phenomenon attributes explore examine investigate">
+                        <div class="gold-objective">ST 27. Demonstrates knowledge of Earth's environment</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.<br><br>CS.A.2. Explore, Examine, and Investigate: Explores objects and people and expands ability to gather and communicate information about them.</div>
+                    </div>
+                    <div class="objective-item" data-search="ST 28 uses tools technology perform tasks examining describing classifying data sorts objects events phenomenon attributes explore examine investigate">
+                        <div class="gold-objective">ST 28. Uses tools and other technology to perform tasks</div>
+                        <div class="frogstreet-progression">CS.A.1. Examining, Describing, and Classifying Data: Sorts and classifies objects, events, and phenomenon by an increasing number of attributes.<br><br>CS.A.2. Explore, Examine, and Investigate: Explores objects and people and expands ability to gather and communicate information about them.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Studies -->
+            <div class="domain-section ss" data-domain="SS">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>Social Studies (SS)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="SS 29 demonstrates knowledge about self identifying abilities self-confidence increasing ability">
+                        <div class="gold-objective">SS 29. Demonstrates knowledge about self</div>
+                        <div class="frogstreet-progression">SF.A.6. Identifying Abilities: Identifies abilities with increasing ability.<br><br>SF.A.7. Self-Confidence: Demonstrates increasing self-confidence in own abilities.</div>
+                    </div>
+                    <div class="objective-item" data-search="SS 30 shows basic understanding people how they live community identifies self relation groups increasing awareness">
+                        <div class="gold-objective">SS 30. Shows basic understanding of people and how they live</div>
+                        <div class="frogstreet-progression">SF.A.8. Community: Identifies self in relation to community and other groups with increasing awareness.</div>
+                    </div>
+                    <div class="objective-item" data-search="SS 31 explores change related familiar people places community identifies self relation groups increasing awareness">
+                        <div class="gold-objective">SS 31. Explores change related to familiar people or places</div>
+                        <div class="frogstreet-progression">SF.A.8. Community: Identifies self in relation to community and other groups with increasing awareness.</div>
+                    </div>
+                    <div class="objective-item" data-search="SS 32 demonstrates simple geographic knowledge community identifies self relation groups increasing awareness">
+                        <div class="gold-objective">SS 32. Demonstrates simple geographic knowledge</div>
+                        <div class="frogstreet-progression">SF.A.8. Community: Identifies self in relation to community and other groups with increasing awareness.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Arts -->
+            <div class="domain-section a" data-domain="A">
+                <div class="domain-header" onclick="toggleDomain(this)">
+                    <span>The Arts (A)</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="domain-content">
+                    <div class="objective-item" data-search="A 33 explores visual arts creativity self-expression demonstrates creative thinking increasingly complex ways">
+                        <div class="gold-objective">A 33. Explores the visual arts</div>
+                        <div class="frogstreet-progression">SF.B.10. Creativity and Self-Expression: Demonstrates creative thinking in increasingly complex ways.</div>
+                    </div>
+                    <div class="objective-item" data-search="A 34 explores musical concepts expression creativity self-expression demonstrates creative thinking increasingly complex ways">
+                        <div class="gold-objective">A 34. Explores musical concepts and expression</div>
+                        <div class="frogstreet-progression">SF.B.10. Creativity and Self-Expression: Demonstrates creative thinking in increasingly complex ways.</div>
+                    </div>
+                    <div class="objective-item" data-search="A 35 explores dance movement concepts creativity self-expression demonstrates creative thinking increasingly complex ways">
+                        <div class="gold-objective">A 35. Explores dance and movement concepts</div>
+                        <div class="frogstreet-progression">SF.B.10. Creativity and Self-Expression: Demonstrates creative thinking in increasingly complex ways.</div>
+                    </div>
+                    <div class="objective-item" data-search="A 36 explores drama through actions language creativity self-expression demonstrates creative thinking increasingly complex ways">
+                        <div class="gold-objective">A 36. Explores drama through actions and language</div>
+                        <div class="frogstreet-progression">SF.B.10. Creativity and Self-Expression: Demonstrates creative thinking in increasingly complex ways.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Document loaded, initializing...');
+            filterContent();
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchTerm = e.target.value.toLowerCase();
+            console.log('Search term:', searchTerm);
+            filterContent();
+        });
+
+        // Domain filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Filter clicked:', this.dataset.domain);
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                currentFilter = this.dataset.domain;
+                filterContent();
+            });
+        });
+
+        // Clear search
+        document.getElementById('clearSearch').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            searchTerm = '';
+            currentFilter = 'all';
+            
+            // Reset filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.filter-btn[data-domain="all"]').classList.add('active');
+            
+            filterContent();
+        });
+
+        // Toggle domain sections
+        function toggleDomain(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.textContent = '▶';
+            } else {
+                content.classList.add('expanded');
+                icon.textContent = '▼';
+            }
+        }
+
+        // Filter content based on search and domain
+        function filterContent() {
+            console.log('Filtering content with term:', searchTerm, 'domain:', currentFilter);
+            
+            const domains = document.querySelectorAll('.domain-section');
+            const resultsCount = document.getElementById('resultsCount');
+            const noResults = document.getElementById('noResults');
+            let visibleCount = 0;
+            let totalObjectives = 0;
+
+            domains.forEach(domain => {
+                const domainCode = domain.dataset.domain;
+                const objectives = domain.querySelectorAll('.objective-item');
+                let domainHasVisible = false;
+
+                objectives.forEach(objective => {
+                    const searchData = objective.dataset.search.toLowerCase();
+                    const matchesSearch = searchTerm === '' || searchData.includes(searchTerm);
+                    const matchesDomain = currentFilter === 'all' || currentFilter === domainCode;
+
+                    if (matchesSearch && matchesDomain) {
+                        objective.style.display = 'block';
+                        domainHasVisible = true;
+                        visibleCount++;
+                        
+                        // Highlight search terms
+                        if (searchTerm !== '') {
+                            highlightSearchTerm(objective, searchTerm);
+                        } else {
+                            removeHighlights(objective);
+                        }
+                    } else {
+                        objective.style.display = 'none';
+                    }
+                    totalObjectives++;
+                });
+
+                // Show/hide domain based on whether it has visible objectives
+                if (domainHasVisible && (currentFilter === 'all' || currentFilter === domainCode)) {
+                    domain.style.display = 'block';
+                    // Auto-expand domain if searching
+                    if (searchTerm !== '') {
+                        const content = domain.querySelector('.domain-content');
+                        const icon = domain.querySelector('.toggle-icon');
+                        content.classList.add('expanded');
+                        icon.textContent = '▼';
+                    }
+                } else {
+                    domain.style.display = 'none';
+                }
+            });
+
+            // Update results count and no results message
+            if (searchTerm !== '' || currentFilter !== 'all') {
+                if (visibleCount > 0) {
+                    resultsCount.style.display = 'block';
+                    resultsCount.textContent = `Showing ${visibleCount} of ${totalObjectives} objectives`;
+                    noResults.style.display = 'none';
+                } else {
+                    resultsCount.style.display = 'none';
+                    noResults.style.display = 'block';
+                }
+            } else {
+                resultsCount.style.display = 'none';
+                noResults.style.display = 'none';
+            }
+            
+            console.log('Visible count:', visibleCount);
+        }
+
+        // Highlight search terms
+        function highlightSearchTerm(element, term) {
+            // Remove existing highlights first
+            removeHighlights(element);
+            
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            const textNodes = [];
+            let node;
+            while (node = walker.nextNode()) {
+                textNodes.push(node);
+            }
+
+            textNodes.forEach(textNode => {
+                const text = textNode.textContent;
+                const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\                    <div class="objective-item" data-search="L 18 uses emergent reading skills responds questions text retell stories gestures words drawings">')})`, 'gi');
+                if (regex.test(text)) {
+                    const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+                    const span = document.createElement('span');
+                    span.innerHTML = highlightedText;
+                    textNode.parentNode.replaceChild(span, textNode);
+                }
+            });
+        }
+
+        // Remove highlights
+        function removeHighlights(element) {
+            const highlights = element.querySelectorAll('.highlight');
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+        }
+    </script>
+</body>
+</html>
+                        
